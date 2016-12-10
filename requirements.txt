@@ -1,0 +1,4 @@
+gunicorn
+json-rpc
+numpy
+scipy
