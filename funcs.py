@@ -5,6 +5,10 @@ import scipy as sp
 from scipy import linalg
 
 @d.add_method
+def dot(*a, **k):
+    return np.dot(*a, **k).tolist()
+
+@d.add_method
 def inv(*a, **k):
     return sp.linalg.inv(*a, **k).tolist()
 
