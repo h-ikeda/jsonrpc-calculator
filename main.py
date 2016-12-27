@@ -3,7 +3,7 @@ from funcs import d
 
 def app(environ, start_response):
     if 'POST'!=environ.get('REQUEST_METHOD'):
-        if 'OPTIONS'==environ.get('REQUEST_METHOD') and 'POST'==environ.get('Access-Control-Request-Method'):
+        if 'OPTIONS'==environ.get('REQUEST_METHOD'):
             start_response('200 OK',[('Access-Control-Allow-Origin','*'), ('Access-Control-Allow-Methods', 'POST')])
             yield b''
         else:
