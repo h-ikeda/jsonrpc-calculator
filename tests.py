@@ -10,6 +10,10 @@ class FuncTests(unittest.TestCase):
     def test_dot_dict(self):
         a = d['dot'](a=[[1,2],[3,4]], b=[[1,3],[2,1]], c=[[2,1],[5,4]])
         self.assertEqual(a, [[35,25],[87,63]])
+        
+    def test_matrix_rank(self):
+        a = d['matrix_rank']([[1,2],[3,5]])
+        self.assertEqual(a, 2)
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,6 +2,7 @@ from jsonrpc import dispatcher as d
 
 import numpy as np
 import scipy as sp
+from numpy import linalg
 from scipy import linalg
 
 from functools import reduce
@@ -47,5 +48,4 @@ def solve_toeplitz(*a, **k):
 
 d.add_method(sp.linalg.det, 'det')
 d.add_method(sp.linalg.norm, 'norm')
-
-
+d.add_method(np.linalg.matrix_rank, 'matrix_rank')
