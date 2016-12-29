@@ -48,4 +48,7 @@ def solve_toeplitz(*a, **k):
 
 d.add_method(sp.linalg.det, 'det')
 d.add_method(sp.linalg.norm, 'norm')
-d.add_method(np.linalg.matrix_rank, 'matrix_rank')
+
+@d.add_method
+def matrix_rank(*a, **k):
+    return int(np.linalg.matrix_rank(*a, **k))
