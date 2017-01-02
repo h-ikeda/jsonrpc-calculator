@@ -23,9 +23,9 @@ class FrameTests(unittest.TestCase):
         a = frame.transformMatrixLocalToGlobal([0,0,-1.2])
         self.assertTrue(np.allclose(a, ((1,0,0)*2,(0,-1,0)*2,(0,0,-1)*2)*2))
         a = frame.transformMatrixLocalToGlobal([4,0,3])
-        self.assertTrue(np.allclose(a, ((0,-3/5,4/5)*2,(1,0,0)*2,(0,4/5,3/5)*2)*2))
+        self.assertTrue(np.allclose(a, ((0,-3./5,4./5)*2,(1,0,0)*2,(0,4./5,3./5)*2)*2))
         a = frame.transformMatrixLocalToGlobal([0,-4,-3])
-        self.assertTrue(np.allclose(a, ((1,0,0)*2,(0,-3/5,-4/5)*2,(0,4/5,-3/5)*2)*2))
+        self.assertTrue(np.allclose(a, ((1,0,0)*2,(0,-3./5,-4./5)*2,(0,4./5,-3./5)*2)*2))
         
     def test_frame_calculate(self):
         model = {
