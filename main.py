@@ -1,5 +1,4 @@
 from jsonrpc import JSONRPCResponseManager
-from funcs import d
 from frame import d
 
 def app(environ, start_response):
