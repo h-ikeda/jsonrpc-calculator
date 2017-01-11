@@ -6,7 +6,7 @@ def app(environ, start_response):
         if 'OPTIONS'==environ.get('REQUEST_METHOD'):
             start_response('200 OK',[
                 ('Access-Control-Allow-Origin','*'),
-                ('Access-Control-Allow-Methods', 'POST'),
+                ('Access-Control-Allow-Methods', 'POST')])
             yield b''
         else:
             start_response('405 Method Not Allowed',[])
