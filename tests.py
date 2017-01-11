@@ -1,6 +1,5 @@
 import unittest
 import numpy as np
-from jsonrpc import dispatcher as d
 import frame
 
 class FrameTests(unittest.TestCase):
@@ -42,5 +41,5 @@ class FrameTests(unittest.TestCase):
                 {'recid':0,'node':1,'x':0,'y':1,'z':1,'rx':0,'ry':0,'rz':-1}
             ]
         }
-        a = d['frame_calculate'](model)
+        a = frame.d['frame_calculate'](model)
         self.assertEqual(a, {'displacements':{1:{'z':1}}})
