@@ -1,6 +1,6 @@
 from unittest import TestCase
-from os.path import dirname
 from subprocess import Popen
+from time import sleep
 import requests
 import json
 
@@ -8,6 +8,7 @@ class ResponseTest(TestCase):
     
     def setUp(self):
         self.__proc = Popen(('gunicorn', 'main:app'))
+        sleep(1)
 
     def tearDown(self):
         self.__proc.terminate()
