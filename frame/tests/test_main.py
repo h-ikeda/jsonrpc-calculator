@@ -1,8 +1,10 @@
-import unittest
+from unittest import TestCase
 import numpy as np
 import frame
+from frame import model
+from frame import matrix
 
-class FrameTests(unittest.TestCase):
+class FrameTests(TestCase):
     def test_effectiveCoodinates(self):
         nodes = [{'recid':0,'x':-5.4,'y':3.2,'z':4.2},{'recid':1,'x':0,'y':-3.2,'z':1.5},{'recid':3,'x':-2.4,'y':-3.8,'z':9.9}]
         boundaries = [{'recid':0,'node':1,'x':100,'y':0,'z':False,'rx':-15,'ry':True,'rz':False},{'recid':2,'node':0,'x':0,'y':0,'z':True,'rx':False,'ry':False,'rz':1}]
@@ -11,17 +13,17 @@ class FrameTests(unittest.TestCase):
 
     def test_itemById(self):
         items = [{'recid':1,'data':True},{'recid':31,'data':24.8},{'recid':11,'data':12.8},{'recid':44,'data':'string'}]
-        a = frame.itemById(items, 11)
+        a = frame.model.itemById(items, 11)
         self.assertEqual(a, {'recid':11,'data':12.8})
         
-    def test_transformMatrixLocalToGlobal(self):
-        a = frame.transformMatrixLocalToGlobal([0,0,2.85])
+    def test_localToGlobalTransformer(self):
+        a = frame.matrix.localToGlobalTransformer([0,0,2.85])
         self.assertTrue(np.allclose(a, ((1,0,0)*2,(0,1,0)*2,(0,0,1)*2)*2))
-        a = frame.transformMatrixLocalToGlobal([0,0,-1.2])
+        a = frame.matrix.localToGlobalTransformer([0,0,-1.2])
         self.assertTrue(np.allclose(a, ((1,0,0)*2,(0,-1,0)*2,(0,0,-1)*2)*2))
-        a = frame.transformMatrixLocalToGlobal([4,0,3])
+        a = frame.matrix.localToGlobalTransformer([4,0,3])
         self.assertTrue(np.allclose(a, ((0,-3./5,4./5)*2,(1,0,0)*2,(0,4./5,3./5)*2)*2))
-        a = frame.transformMatrixLocalToGlobal([0,-4,-3])
+        a = frame.matrix.localToGlobalTransformer([0,-4,-3])
         self.assertTrue(np.allclose(a, ((1,0,0)*2,(0,-3./5,-4./5)*2,(0,4./5,-3./5)*2)*2))
         
     def test_frame_calculate(self):
@@ -41,5 +43,5 @@ class FrameTests(unittest.TestCase):
                 {'recid':0,'node':1,'x':0,'y':1,'z':1,'rx':0,'ry':0,'rz':-1}
             ]
         }
-        a = frame.d['frame_calculate'](model)
+        a = frame.frame_calculate(model)
         self.assertEqual(a, {'displacements':{1:{'z':1}}})
