@@ -16,7 +16,7 @@ class ResponseTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.__proc.terminate()
-        
+
     def test_invalid_HTTP_requests(self):
         # GET method not allowed.
         result = requests.get('http://localhost:8000')
@@ -28,8 +28,8 @@ class ResponseTest(TestCase):
         result = requests.delete('http://localhost:8000')
         self.assertEqual(result.status_code, 405)
 
-    def postJson(self, dict):
-        return requests.post('http://localhost:8000', data=json.dumps(dict)).json()
+    def postJson(self, json_data):
+        return requests.post('http://localhost:8000', data=json.dumps(json_data)).json()
 
     def test_frame_calculate(self):
         result = self.postJson({
