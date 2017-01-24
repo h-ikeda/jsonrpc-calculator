@@ -27,20 +27,20 @@ class ResponseTest(TestCase):
         # DELETE method not allowed.
         result = requests.delete('http://localhost:8000')
         self.assertEqual(result.status_code, 405)
-        
+
     def postJson(self, dict):
-        return requests.post('http://localhost:8000', data = json.dumps(dict)).json()
-        
+        return requests.post('http://localhost:8000', data=json.dumps(dict)).json()
+
     def test_frame_calculate(self):
         result = self.postJson({
-            'jsonrpc':'2.0',
-            'id':'249teg25e',
-            'method':'frame_calculate',
-            'params':{
+            'jsonrpc': '2.0',
+            'id': '249teg25e',
+            'method': 'frame_calculate',
+            'params': {
                 'model': {
                     'nodes': [
                         {'recid': 0, 'x': 0, 'y': 0, 'z': 0},
-                        {'recid': 1, 'x': 0, 'y': 0, 'z':1}
+                        {'recid': 1, 'x': 0, 'y': 0, 'z': 1}
                     ],
                     'lines': [
                         {'recid': 0, 'n1': 0, 'n2': 1, 'EA': 1}

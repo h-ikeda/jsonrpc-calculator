@@ -9,26 +9,25 @@ def localToGlobalTransformer(vectorZ, vectorX=None):
         return (
             (t[0], -s*t[1], 0) * 2,
             (t[1],  s*t[0], 0) * 2,
-            (   0,       0, s) * 2
+            (0, 0, s) * 2
         ) * 2
     length = norm(vectorZ)
     plen = norm(vectorZ[:2])
     if vectorX is not None:
-        z = vectoZ / length
+        z = vectorZ / length
         x = vectorX - np.dot(vectorX, z) * z
-        cZ0 = (np.transpose(x[:2],(1,0)) - vectorZ[:2]) / plen / norm(x)
+        cZ0 = (np.transpose(x[:2], (1, 0)) - vectorZ[:2]) / plen / norm(x)
         sZ0 = np.sqrt((1 - cZ0) * (1 + cZ0))
         return (
-            (-vectorZ[1] / plen * cZ0 -vectorZ[0] / plen * vectorZ[2] / length * sZ0, vectorZ[1] / plen * sZ0 -vectorZ[0] / plen * vectorZ[2] / length * cZ0, vectorZ[0] / length)*2,
-            (vectorZ[0] / plen * cZ0 -vectorZ[1] / plen * vectorZ[2] / length * sZ0, -vectorZ[0] / plen * sZ0 -vectorZ[1] / plen * vectorZ[2] / length * cZ0, vectorZ[1] / length)*2,
+            (-vectorZ[1] / plen * cZ0 - vectorZ[0] / plen * vectorZ[2] / length * sZ0, vectorZ[1] / plen * sZ0 - vectorZ[0] / plen * vectorZ[2] / length * cZ0, vectorZ[0] / length) * 2,
+            (vectorZ[0] / plen * cZ0 - vectorZ[1] / plen * vectorZ[2] / length * sZ0, -vectorZ[0] / plen * sZ0 - vectorZ[1] / plen * vectorZ[2] / length * cZ0, vectorZ[1] / length) * 2,
             (plen / length * sZ0, plen / length * cZ0, vectorZ[2] / length)*2
-        )*2
+        ) * 2
     return (
         (-vectorZ[1] / plen, -vectorZ[0] / plen * vectorZ[2] / length, vectorZ[0] / length) * 2,
         (vectorZ[0] / plen, -vectorZ[1] / plen * vectorZ[2] / length, vectorZ[1] / length) * 2,
         (0, plen / length, vectorZ[2] / length) * 2
     ) * 2
-
 
 
 def lineStiffnessGlobal(vector, EA):

@@ -8,14 +8,14 @@ def app(environ, start_response):
     if 'POST' != environ.get('REQUEST_METHOD'):
         if 'OPTIONS' == environ.get('REQUEST_METHOD'):
             start_response('200 OK', [
-                ('Access-Control-Allow-Origin','*'),
+                ('Access-Control-Allow-Origin', '*'),
                 ('Access-Control-Allow-Methods', 'POST')])
             yield b''
         else:
             start_response('405 Method Not Allowed', [])
             yield b''
     else:
-        j = JSONRPCResponseManager.handle(environ['wsgi.input'].read().decode(), d)
+        j = JSONRPCResponseManager.handle(environ['wsgi.input'].read().decode(), dispatcher)
         if j:
             start_response('200 OK', [('Access-Control-Allow-Origin', '*')])
             yield j.json.encode()
