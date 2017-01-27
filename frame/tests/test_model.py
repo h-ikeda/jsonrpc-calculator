@@ -9,7 +9,7 @@ class ModelTests(TestCase):
             {'recid': 0, 'x': 0, 'y': 0, 'z': 0},
             {'recid': 1, 'x': 0, 'y': 0, 'z': 1}
         ],
-        'lines':[
+        'lines': [
             {'recid': 0, 'n1': 0, 'n2': 1, 'EA': 1}
         ],
         'boundaries': [
@@ -17,7 +17,7 @@ class ModelTests(TestCase):
             {'recid': 1, 'node': 1, 'x': True, 'y': True, 'z': 0, 'rx': True, 'ry': True, 'rz': True}
         ],
         'nodeLoads': [
-                {'recid': 0,'node': 1, 'x': 0, 'y': 1, 'z': 1, 'rx': 0, 'ry': 0, 'rz': -1}
+                {'recid': 0, 'node': 1, 'x': 0, 'y': 1, 'z': 1, 'rx': 0, 'ry': 0, 'rz': -1}
         ]
     })
 
