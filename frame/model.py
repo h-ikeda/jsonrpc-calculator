@@ -39,7 +39,7 @@ class Model:
 
     def effectiveCount(self):
         return len(self.__index)
-        
+
     def effectiveCoodinates(self):
         return self.__index
 
