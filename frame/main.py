@@ -12,6 +12,7 @@ from scipy.linalg import solve
 from . import matrix
 from . import model
 
+
 def frame_calculate(frameModel):
     inputModel = model.Model(frameModel, allow_overwrite=True)
     K = np.zeros((inputModel.effectiveCount(), ) * 2)
