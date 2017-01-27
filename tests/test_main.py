@@ -10,7 +10,7 @@ class ResponseTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.__proc = Popen(('gunicorn', 'main:app'))
+        cls.__proc = Popen(('waitress-serve', 'main:app'))
         sleep(1)
 
     @classmethod
@@ -19,17 +19,18 @@ class ResponseTest(TestCase):
 
     def test_invalid_HTTP_requests(self):
         # GET method not allowed.
-        result = requests.get('http://localhost:8000')
+        result = requests.get('http://localhost:8080')
         self.assertEqual(result.status_code, 405)
         # PUT method not allowed.
-        result = requests.put('http://localhost:8000')
+        result = requests.put('http://localhost:8080')
         self.assertEqual(result.status_code, 405)
         # DELETE method not allowed.
-        result = requests.delete('http://localhost:8000')
+        result = requests.delete('http://localhost:8080')
         self.assertEqual(result.status_code, 405)
 
-    def postJson(self, json_data):
-        return requests.post('http://localhost:8000', data=json.dumps(json_data)).json()
+    @classmethod
+    def postJson(cls, json_data):
+        return requests.post('http://localhost:8080', data=json.dumps(json_data)).json()
 
     def test_frame_calculate(self):
         result = self.postJson({
@@ -37,7 +38,7 @@ class ResponseTest(TestCase):
             'id': '249teg25e',
             'method': 'frame_calculate',
             'params': {
-                'model': {
+                'frameModel': {
                     'nodes': [
                         {'recid': 0, 'x': 0, 'y': 0, 'z': 0},
                         {'recid': 1, 'x': 0, 'y': 0, 'z': 1}
