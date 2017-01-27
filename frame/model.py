@@ -20,7 +20,7 @@ class Model:
         # to
         # { 'name': { ID: {'x': X, 'y': Y, ... } } }
         #
-        for name in input:
+        for name in self.__data:
             self.__data[name] = { data.pop('recid'): data for data in self.__data[name] }
             setattr(self, name, self.__data[name])
         #
