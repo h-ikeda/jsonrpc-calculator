@@ -26,7 +26,7 @@ class Model:
         #
         # Create fixed coodinates set.
         #
-        fixedCoodinates = { (boundary['node'], c) for boundary in self.boundaries.values() for c in coodinates if boundary[c] and isinstance(boundary[c], bool) }
+        fixedCoodinates = {(boundary['node'], c) for boundary in self.boundaries.values() for c in coodinates if boundary[c] and isinstance(boundary[c], bool)}
         #
         # Give unique numbers to node and coodinate pairs, except fixed ones.
         #
