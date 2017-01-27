@@ -12,43 +12,32 @@ from scipy.linalg import solve
 from . import matrix
 from . import model
 
-directions = ('x', 'y', 'z', 'rx', 'ry', 'rz')
-effectiveCoodinates = model.effectiveCoodinates
-itemById = model.itemById
-transformMatrixLocalToGlobal = matrix.localToGlobalTransformer
-lineStiffnessGlobal = matrix.lineStiffnessGlobal
-
-
-def frame_calculate(model):
-    indexList = effectiveCoodinates(model['nodes'], model['boundaries'])
-    K = np.zeros((len(indexList), )*2)
-    for line in model['lines']:
-        n = (itemById(model['nodes'], line['n1']), itemById(model['nodes'], line['n2']))
-        v = (n[1]['x']-n[0]['x'], n[1]['y']-n[0]['y'], n[1]['z']-n[0]['z'])
+def frame_calculate(frameModel):
+    inputModel = model.Model(frameModel, allow_overwrite=True)
+    K = np.zeros((inputModel.effectiveCount(), ) * 2)
+    for key, line in inputModel.lines.items():
+        n = (line['n1'], line['n2'])
+        v = inputModel.lineVector(key)
         EA = line['EA']
-        for i, Ki in enumerate(lineStiffnessGlobal(v, EA)):
+        for i, Ki in enumerate(matrix.lineStiffnessGlobal(tuple(v), EA)):
             for j, Kij in enumerate(Ki):
-                for k1, d1 in enumerate(directions):
-                    for k2, d2 in enumerate(directions):
-                        try:
-                            a = indexList.index((n[i]['recid'], d1))
-                            b = indexList.index((n[j]['recid'], d2))
-                        except ValueError:
-                            continue
-                        K[a][b] += Kij[k1][k2]
-    P = np.zeros(len(indexList))
-    for nodeLoad in model['nodeLoads']:
-        for d in directions:
-            try:
-                i = indexList.index((nodeLoad['node'], d))
-            except ValueError:
-                continue
-            P[i] -= nodeLoad[d]
-    D = solve(K, P)
+                for k1, d1 in enumerate(model.coodinates):
+                    for k2, d2 in enumerate(model.coodinates):
+                        a = inputModel.effectiveIndexOf(n[i], d1)
+                        b = inputModel.effectiveIndexOf(n[j], d2)
+                        if a >= 0 and b >= 0:
+                            K[a][b] += Kij[k1][k2]
+    P = np.zeros(inputModel.effectiveCount())
+    for nodeLoad in inputModel.nodeLoads.values():
+        for d in model.coodinates:
+            i = inputModel.effectiveIndexOf(nodeLoad['node'], d)
+            if i >= 0:
+                P[i] -= nodeLoad[d]
+    D = solve(K, P, overwrite_a=True, overwrite_b=True)
     R = {}
-    for i, d in zip(indexList, D):
-        if i[0] not in R:
-            R[i[0]] = {i[1]: d}
+    for node_id, coodinate in inputModel.effectiveCoodinates():
+        if node_id in R:
+            R[node_id][coodinate] = D[inputModel.effectiveIndexOf(node_id, coodinate)]
         else:
-            R[i[0]][i[1]] = d
+            R[node_id] = { coodinate: D[inputModel.effectiveIndexOf(node_id, coodinate)] }
     return {'displacements': R}
