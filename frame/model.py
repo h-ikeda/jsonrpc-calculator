@@ -21,7 +21,7 @@ class Model:
         # { 'name': { ID: {'x': X, 'y': Y, ... } } }
         #
         for name in self.__data:
-            self.__data[name] = { data.pop('recid'): data for data in self.__data[name] }
+            self.__data[name] = {data.pop('recid'): data for data in self.__data[name]}
             setattr(self, name, self.__data[name])
         #
         # Create fixed coodinates set.
@@ -30,9 +30,9 @@ class Model:
         #
         # Give unique numbers to node and coodinate pairs, except fixed ones.
         #
-        self.__index = { (node, c) for node in self.nodes for c in coodinates }
+        self.__index = {(node, c) for node in self.nodes for c in coodinates}
         self.__index -= fixedCoodinates
-        self.__index = { pair: i for i, pair in enumerate(self.__index) }
+        self.__index = {pair: i for i, pair in enumerate(self.__index)}
 
     def effectiveIndexOf(self, node_id, coodinate):
         return self.__index.get((node_id, coodinate), -1)

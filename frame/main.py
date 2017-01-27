@@ -40,5 +40,5 @@ def frame_calculate(frameModel):
         if node_id in R:
             R[node_id][coodinate] = D[inputModel.effectiveIndexOf(node_id, coodinate)]
         else:
-            R[node_id] = { coodinate: D[inputModel.effectiveIndexOf(node_id, coodinate)] }
+            R[node_id] = {coodinate: D[inputModel.effectiveIndexOf(node_id, coodinate)]}
     return {'displacements': R}
