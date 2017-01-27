@@ -4,15 +4,15 @@ coodinates_d = coodinates[:3]
 
 class Model:
 
-    def __init__(self, input, allow_overwrite=False):
+    def __init__(self, inputModel, allow_overwrite=False):
         #
-        # Copy input model. Deep copy if overwrite is not allowed.
+        # Copy inputModel. Deep copy if overwrite is not allowed.
         #
         if allow_overwrite:
-            self.__data = input
+            self.__data = inputModel
         else:
             import copy
-            self.__data = copy.deepcopy(input)
+            self.__data = copy.deepcopy(inputModel)
         #
         # Restructure model.
         # From
