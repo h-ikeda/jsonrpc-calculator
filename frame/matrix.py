@@ -1,68 +1,24 @@
-import numpy as np
-from numpy.linalg import norm
+from math import hypot, cos, sin
 
 
-def localToGlobalTransformer(vectorZ, vectorX=None):
-    if np.allclose(vectorZ[:2], (0, 0)):
-        t = tuple(i / t for i, t in zip(vectorX[:2], (norm(vectorX[:2]),)*2)) if vectorX is not None else (1, 0)
-        s = np.sign(vectorZ[2])
+def transformMatrix(x, y, z, theta):
+    c = cos(theta)
+    s = sin(theta)
+    if (x == 0 and z == 0):
+        y = 1. if y > 0 else -1.
         return (
-            (t[0], -s*t[1], 0) * 2,
-            (t[1],  s*t[0], 0) * 2,
-            (0, 0, s) * 2
-        ) * 2
-    length = norm(vectorZ)
-    plen = norm(vectorZ[:2])
-    if vectorX is not None:
-        z = vectorZ / length
-        x = vectorX - np.dot(vectorX, z) * z
-        cZ0 = (np.transpose(x[:2], (1, 0)) - vectorZ[:2]) / plen / norm(x)
-        sZ0 = np.sqrt((1 - cZ0) * (1 + cZ0))
-        return (
-            (-vectorZ[1] / plen * cZ0 - vectorZ[0] / plen * vectorZ[2] / length * sZ0, vectorZ[1] / plen * sZ0 - vectorZ[0] / plen * vectorZ[2] / length * cZ0, vectorZ[0] / length) * 2,
-            (vectorZ[0] / plen * cZ0 - vectorZ[1] / plen * vectorZ[2] / length * sZ0, -vectorZ[0] / plen * sZ0 - vectorZ[1] / plen * vectorZ[2] / length * cZ0, vectorZ[1] / length) * 2,
-            (plen / length * sZ0, plen / length * cZ0, vectorZ[2] / length)*2
-        ) * 2
+            (0., y, 0.),
+            (-y * c, 0., s),
+            (y * s, 0., c)
+        )
+    h = hypot(x, z)
+    l = hypot(h, y)
+    x /= l
+    y /= l
+    z /= l
+    h /= l
     return (
-        (-vectorZ[1] / plen, -vectorZ[0] / plen * vectorZ[2] / length, vectorZ[0] / length) * 2,
-        (vectorZ[0] / plen, -vectorZ[1] / plen * vectorZ[2] / length, vectorZ[1] / length) * 2,
-        (0, plen / length, vectorZ[2] / length) * 2
-    ) * 2
-
-
-def lineStiffnessGlobal(vector, EA):
-    L = norm(vector)
-    K11 = np.array((
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, -EA/L, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0)
-    ))
-    K12 = np.array((
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, EA/L, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0)
-    ))
-    K21 = np.array((
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, EA/L, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0)
-    ))
-    K22 = np.array((
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, -EA/L, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0),
-        (0, 0, 0, 0, 0, 0)
-    ))
-    t = np.array(localToGlobalTransformer(vector))
-    return (np.dot(np.dot(t, K11), t.T), np.dot(np.dot(t, K12), t.T)), (np.dot(np.dot(t, K21), t.T), np.dot(np.dot(t, K22), t.T))
+        (x, y, z),
+        (-(x * y * c + z * s) / h, h * c, (x * s - y * z * c) / h),
+        ((x * y * s - z * c) / h, -h * s, (x * c + y * z * s) / h)
+    )
