@@ -2,12 +2,12 @@
 
 from unittest import TestCase
 from frame import matrix
-from numpy.testing import *
+from numpy.testing import assert_allclose
 from math import radians
 
 
 class MatrixTests(TestCase):
-    def test_transformMatrix(self):
+    def test_transform_matrix(self):
         # Y軸周りに-90度回転
         a = matrix.transformMatrix(0, 0, 2.85, 0)
         assert_allclose((

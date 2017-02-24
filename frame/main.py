@@ -21,8 +21,8 @@ def frame_calculate(frameModel):
         v = inputModel.lineVector(key)
         E = tline['EA']
         G = 0
-        Ax = 1
-        for i, Ki in enumerate(line.stiffnessGlobal(v[0], v[1], v[2], E, G, Ax)):
+        A = 1
+        for i, Ki in enumerate(line.stiffnessGlobal(v[0], v[1], v[2], E, G, A)):
             for k1, d1 in enumerate(model.coodinates):
                 for k2, d2 in enumerate(model.coodinates):
                     a = inputModel.effectiveIndexOf(n[i // 2], d1)

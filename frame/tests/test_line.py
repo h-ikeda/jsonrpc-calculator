@@ -3,11 +3,11 @@
 from unittest import TestCase
 from frame import line
 from random import uniform
-from numpy.testing import *
+from numpy.testing import assert_allclose
 
 
 class LineTests(TestCase):
-    def test_stiffnessLocal(self):
+    def test_stiffness_local(self):
         # As a truss
         L = uniform(1e-3, 1e9)
         E = uniform(1e-3, 1e9)
@@ -43,7 +43,7 @@ class LineTests(TestCase):
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.)), a.next())
 
-    def test_stiffnessGlobal(self):
+    def test_stiffness_global(self):
         # As a truss, no rotation.
         a = line.stiffnessGlobal(1241, 0, 0, 5.2, 0, 12.4)
         assert_allclose((
