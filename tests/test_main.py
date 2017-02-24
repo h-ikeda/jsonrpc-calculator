@@ -53,7 +53,7 @@ class ResponseTest(TestCase):
             with self.assertRaises(HTTPError) as cm:
                 urlopen(req)
             self.assertEqual(405, cm.exception.code)
-    
+
     def test_OPTIONS_request(self):
         # OPTIONSメソッドでアクセス
         req = Request('http://127.0.0.1:8080')
