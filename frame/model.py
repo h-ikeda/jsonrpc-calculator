@@ -46,4 +46,4 @@ class Model:
     def lineVector(self, line_id):
         n1 = self.lines[line_id]['n1']
         n2 = self.lines[line_id]['n2']
-        return (self.nodes[n2][c] - self.nodes[n1][c] for c in coodinates_d)
+        return tuple(self.nodes[n2][c] - self.nodes[n1][c] for c in coodinates_d)
