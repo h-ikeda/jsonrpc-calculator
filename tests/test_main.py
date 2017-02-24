@@ -22,7 +22,7 @@ class ResponseTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.__server_process.terminate()
-        
+
     def test_invalid_HTTP_requests(self):
         # 不正なリクエストを送信すると、
         # HTTP status 400 (Bad Request) を返す。
