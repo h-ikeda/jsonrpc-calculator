@@ -2,16 +2,15 @@
 
 from unittest import TestCase
 from frame import line
-from random import uniform
 from numpy.testing import assert_allclose
 
 
 class LineTests(TestCase):
     def test_stiffness_local(self):
         # As a truss
-        L = uniform(1e-3, 1e9)
-        E = uniform(1e-3, 1e9)
-        A = uniform(1e-3, 1e9)
+        L = 3.68
+        E = 0.201
+        A = 0.01635
         k = E * A / L
         a = line.stiffnessLocal(L, E, 0, A)
         assert_allclose((
