@@ -2,7 +2,7 @@
 
 from unittest import TestCase
 from frame import line
-from numpy.testing import assert_allclose
+from numpy import allclose
 
 
 class LineTests(TestCase):
@@ -13,63 +13,63 @@ class LineTests(TestCase):
         A = 0.01635
         k = E * A / L
         a = line.stiffnessLocal(L, E, 0, A)
-        assert_allclose((
+        self.assertTrue(allclose((
             (k, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
-            (0., 0., 0., 0., 0., 0.)), a.next())
-        assert_allclose((
+            (0., 0., 0., 0., 0., 0.)), a.next()))
+        self.assertTrue(allclose((
             (-k, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
-            (0., 0., 0., 0., 0., 0.)), a.next())
-        assert_allclose((
+            (0., 0., 0., 0., 0., 0.)), a.next()))
+        self.assertTrue(allclose((
             (-k, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
-            (0., 0., 0., 0., 0., 0.)), a.next())
-        assert_allclose((
+            (0., 0., 0., 0., 0., 0.)), a.next()))
+        self.assertTrue(allclose((
             (k, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
-            (0., 0., 0., 0., 0., 0.)), a.next())
+            (0., 0., 0., 0., 0., 0.)), a.next()))
 
     def test_stiffness_global(self):
         # As a truss, no rotation.
         a = line.stiffnessGlobal(1241, 0, 0, 5.2, 0, 12.4)
-        assert_allclose((
+        self.assertTrue(allclose((
             (0.051958098, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
-            (0., 0., 0., 0., 0., 0.)), a.next())
-        assert_allclose((
+            (0., 0., 0., 0., 0., 0.)), a.next()))
+        self.assertTrue(allclose((
             (-0.051958098, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
-            (0., 0., 0., 0., 0., 0.)), a.next())
-        assert_allclose((
+            (0., 0., 0., 0., 0., 0.)), a.next()))
+        self.assertTrue(allclose((
             (-0.051958098, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
-            (0., 0., 0., 0., 0., 0.)), a.next())
-        assert_allclose((
+            (0., 0., 0., 0., 0., 0.)), a.next()))
+        self.assertTrue(allclose((
             (0.051958098, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
-            (0., 0., 0., 0., 0., 0.)), a.next())
+            (0., 0., 0., 0., 0., 0.)), a.next()))
