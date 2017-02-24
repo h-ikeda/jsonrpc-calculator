@@ -1,8 +1,13 @@
-from unittest import TestCase
-from subprocess import Popen
-from time import sleep
+# coding: UTF-8
 
-import requests
+from unittest import TestCase
+from multiprocessing import Process
+from waitress import serve
+import sys
+sys.path.append('..')
+from main import app
+from time import sleep
+from urllib2 import Request, urlopen, HTTPError
 import json
 
 
@@ -10,27 +15,63 @@ class ResponseTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.__proc = Popen(('waitress-serve', 'main:app'))
+        cls.__server_process = Process(target=serve, args=(app,))
+        cls.__server_process.start()
         sleep(1)
 
     @classmethod
     def tearDownClass(cls):
-        cls.__proc.terminate()
-
+        cls.__server_process.terminate()
+        
     def test_invalid_HTTP_requests(self):
-        # GET method not allowed.
-        result = requests.get('http://localhost:8080')
-        self.assertEqual(result.status_code, 405)
-        # PUT method not allowed.
-        result = requests.put('http://localhost:8080')
-        self.assertEqual(result.status_code, 405)
-        # DELETE method not allowed.
-        result = requests.delete('http://localhost:8080')
-        self.assertEqual(result.status_code, 405)
+        # 不正なリクエストを送信すると、
+        # HTTP status 400 (Bad Request) を返す。
+        req = Request('http://127.0.0.1:8080')
+        req.get_method = lambda: 'GEET'
+        with self.assertRaises(HTTPError) as cm:
+            urlopen(req)
+        self.assertEqual(400, cm.exception.code)
+
+    def test_not_allowed_HTTP_requests(self):
+        # 許可されていないHTTPメソッドを使用すると、
+        # HTTP status 405 (Method Not Allowed) を返す。
+        req = Request('http://127.0.0.1:8080')
+        req.get_method = lambda: method
+        methods_not_allowed = (
+            'GET',
+            'PUT',
+            'DELETE',
+            'HEAD',
+            'CONNECT',
+            'TRACE',
+            'LINK',
+            'UNLINK',
+            'PATCH'
+        )
+        for m in methods_not_allowed:
+            method = m
+            with self.assertRaises(HTTPError) as cm:
+                urlopen(req)
+            self.assertEqual(405, cm.exception.code)
+    
+    def test_OPTIONS_request(self):
+        # OPTIONSメソッドでアクセス
+        req = Request('http://127.0.0.1:8080')
+        req.get_method = lambda: 'OPTIONS'
+        handle = urlopen(req)
+        headers = handle.info()
+        testheaders = (
+            ('Access-Control-Allow-Origin', '*'),
+            ('Access-Control-Allow-Methods', 'POST')
+        )
+        for n, v in testheaders:
+            self.assertEqual(v, headers.getheader(n))
 
     @classmethod
     def postJson(cls, json_data):
-        return requests.post('http://localhost:8080', data=json.dumps(json_data)).json()
+        req = Request('http://127.0.0.1:8080', json.dumps(json_data))
+        handle = urlopen(req)
+        return json.loads(handle.read())
 
     def test_frame_calculate(self):
         result = self.postJson({
