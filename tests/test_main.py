@@ -7,7 +7,7 @@ import sys
 sys.path.append('..')
 from main import app
 from time import sleep
-from urllib2 import Request, urlopen, HTTPError
+import requests
 import json
 
 
@@ -26,17 +26,12 @@ class ResponseTest(TestCase):
     def test_invalid_HTTP_requests(self):
         # 不正なリクエストを送信すると、
         # HTTP status 400 (Bad Request) を返す。
-        req = Request('http://127.0.0.1:8080')
-        req.get_method = lambda: 'GEET'
-        with self.assertRaises(HTTPError) as cm:
-            urlopen(req)
-        self.assertEqual(400, cm.exception.code)
+        r = requests.request('GEET', 'http://127.0.0.1:8080')
+        self.assertEqual(400, r.status_code)
 
-    def test_not_allowed_HTTP_requests(self):
+    def test_not_allowed_http_requests(self):
         # 許可されていないHTTPメソッドを使用すると、
         # HTTP status 405 (Method Not Allowed) を返す。
-        req = Request('http://127.0.0.1:8080')
-        req.get_method = lambda: method
         methods_not_allowed = (
             'GET',
             'PUT',
@@ -48,30 +43,25 @@ class ResponseTest(TestCase):
             'UNLINK',
             'PATCH'
         )
-        for m in methods_not_allowed:
-            method = m
-            with self.assertRaises(HTTPError) as cm:
-                urlopen(req)
-            self.assertEqual(405, cm.exception.code)
+        for method in methods_not_allowed:
+            r = requests.request(method, 'http://127.0.0.1:8080')
+            self.assertEqual(405, r.status_code)
 
-    def test_OPTIONS_request(self):
+    def test_options_request(self):
         # OPTIONSメソッドでアクセス
-        req = Request('http://127.0.0.1:8080')
-        req.get_method = lambda: 'OPTIONS'
-        handle = urlopen(req)
-        headers = handle.info()
-        testheaders = (
-            ('Access-Control-Allow-Origin', '*'),
-            ('Access-Control-Allow-Methods', 'POST')
-        )
-        for n, v in testheaders:
-            self.assertEqual(v, headers.getheader(n))
+        r = requests.options('http://127.0.0.1:8080')
+        expected = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST'
+        }
+        for name, value in expected.iteritems():
+            self.assertTrue(name in r.headers)
+            self.assertEqual(value, r.headers[name])
 
     @classmethod
     def postJson(cls, json_data):
-        req = Request('http://127.0.0.1:8080', json.dumps(json_data))
-        handle = urlopen(req)
-        return json.loads(handle.read())
+        r = requests.post('http://127.0.0.1:8080', json=json_data)
+        return r.json()
 
     def test_frame_calculate(self):
         result = self.postJson({
