@@ -1,6 +1,6 @@
 from math import hypot
 from scipy.linalg import block_diag
-from matrix import transformMatrix
+from .matrix import transformMatrix
 from numpy import dot
 
 
