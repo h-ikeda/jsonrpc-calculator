@@ -1,7 +1,12 @@
-from unittest import TestCase
-from subprocess import Popen
-from time import sleep
+# coding: UTF-8
 
+from unittest import TestCase
+from multiprocessing import Process
+from waitress import serve
+import sys
+sys.path.append('..')
+from main import app
+from time import sleep
 import requests
 import json
 
@@ -10,27 +15,53 @@ class ResponseTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.__proc = Popen(('waitress-serve', 'main:app'))
+        cls.__server_process = Process(target=serve, args=(app,))
+        cls.__server_process.start()
         sleep(1)
 
     @classmethod
     def tearDownClass(cls):
-        cls.__proc.terminate()
+        cls.__server_process.terminate()
 
     def test_invalid_HTTP_requests(self):
-        # GET method not allowed.
-        result = requests.get('http://localhost:8080')
-        self.assertEqual(result.status_code, 405)
-        # PUT method not allowed.
-        result = requests.put('http://localhost:8080')
-        self.assertEqual(result.status_code, 405)
-        # DELETE method not allowed.
-        result = requests.delete('http://localhost:8080')
-        self.assertEqual(result.status_code, 405)
+        # 不正なリクエストを送信すると、
+        # HTTP status 400 (Bad Request) を返す。
+        r = requests.request('GEET', 'http://127.0.0.1:8080')
+        self.assertEqual(400, r.status_code)
+
+    def test_not_allowed_http_requests(self):
+        # 許可されていないHTTPメソッドを使用すると、
+        # HTTP status 405 (Method Not Allowed) を返す。
+        methods_not_allowed = (
+            'GET',
+            'PUT',
+            'DELETE',
+            'HEAD',
+            'CONNECT',
+            'TRACE',
+            'LINK',
+            'UNLINK',
+            'PATCH'
+        )
+        for method in methods_not_allowed:
+            r = requests.request(method, 'http://127.0.0.1:8080')
+            self.assertEqual(405, r.status_code)
+
+    def test_options_request(self):
+        # OPTIONSメソッドでアクセス
+        r = requests.options('http://127.0.0.1:8080')
+        expected = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST'
+        }
+        for name, value in expected.iteritems():
+            self.assertTrue(name in r.headers)
+            self.assertEqual(value, r.headers[name])
 
     @classmethod
     def postJson(cls, json_data):
-        return requests.post('http://localhost:8080', data=json.dumps(json_data)).json()
+        r = requests.post('http://127.0.0.1:8080', json=json_data)
+        return r.json()
 
     def test_frame_calculate(self):
         result = self.postJson({
