@@ -54,7 +54,7 @@ class ResponseTest(TestCase):
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST'
         }
-        for name, value in expected.iteritems():
+        for name, value in expected.items():
             self.assertTrue(name in r.headers)
             self.assertEqual(value, r.headers[name])
 
