@@ -8,7 +8,6 @@ sys.path.append('..')
 from main import app
 from time import sleep
 import requests
-import json
 
 
 class ResponseTest(TestCase):
