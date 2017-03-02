@@ -1,18 +1,18 @@
 from math import pi, sqrt
 
 
-def properties(type, *args, **kwargs):
-    if type == 'H':
+def properties(section_type, *args, **kwargs):
+    if section_type == 'H':
         return hSectionProperties(*args, **kwargs)
-    elif type == 'T':
+    elif section_type == 'T':
         return tSectionProperties(*args, **kwargs)
-    elif type == 'I':
+    elif section_type == 'I':
         return iSectionProperties(*args, **kwargs)
-    elif type == 'circle':
+    elif section_type == 'circle':
         return circleSectionProperties(*args, **kwargs)
-    elif type == 'C':
+    elif section_type == 'C':
         return cSectionProperties(*args, **kwargs)
-    elif type == 'square':
+    elif section_type == 'square':
         return squareSectionProperties(*args, **kwargs)
 
 
