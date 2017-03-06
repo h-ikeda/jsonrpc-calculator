@@ -21,9 +21,9 @@ class ModelTests(TestCase):
         ]
     })
 
-    def test_initModel(self):
+    def test_init_model(self):
         self.assertEqual(self.__model.nodes[1], {'x': 0, 'y': 0, 'z': 1})
         self.assertEqual(self.__model.boundaries[0], {'node': 0, 'x': True, 'y': True, 'z': True, 'rx': True, 'ry': True, 'rz': True})
 
-    def test_effectiveCoodinates(self):
-        self.assertEqual(tuple(self.__model.effectiveCoodinates()), ((1, 'z'),))
+    def test_effective_coodinates(self):
+        self.assertEqual(tuple(self.__model.effective_coodinates()), ((1, 'z'),))
