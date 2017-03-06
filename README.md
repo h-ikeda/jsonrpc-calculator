@@ -9,6 +9,72 @@ Python version|Build status
 ## Overview
 This program runs on wsgi server, recieves json requests compatible with jsonrpc, and responds processed values.
 ## Usage
-Writing now...
+POST your data model formatted with JSONRPC, and it returns the analyzed response as a JSONRPC response.
+
+POST:
+```json
+{
+    "jsonrpc": "2.0",
+    "id": "id string",
+    "method": "method string",
+    "params": ["object or array"]
+}
+```
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "id": "id string",
+    "result": "analyzed result"
+}
+```
+or on error:
+```json
+{
+    "jsonrpc": "2.0",
+    "id": "id string",
+    "error": {
+        "code": -32000,
+        "message": "error message"
+    }
+}
+```
+### Methods
+#### frame_calculate
+##### Discription
+Analyze frame structure's node displacements.
+##### Params
+```json
+{
+    "frameModel": {
+        "nodes": {
+            "id": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "lines": {
+        
+        },
+        "boundaries": {
+        
+        },
+        "nodeLoads": {
+        
+        }
+    }
+}
+```
+##### Result
+```json
+{
+    "displacements": {
+        "node_id": 0,
+        "x": 0,
+        "y": 0,
+        "z": 0
+    }
+}
+```
 ## Contribution
 Writing now...
