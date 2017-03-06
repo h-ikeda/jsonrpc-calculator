@@ -1,7 +1,8 @@
 from jsonrpc import JSONRPCResponseManager, dispatcher
-from frame import frame_calculate
+from frame import frame_calculate, calculate
 
 dispatcher['frame_calculate'] = frame_calculate
+dispatcher['calculate'] = calculate
 
 
 def app(environ, start_response):

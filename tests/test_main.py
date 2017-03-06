@@ -57,13 +57,8 @@ class ResponseTest(TestCase):
             self.assertTrue(name in r.headers)
             self.assertEqual(value, r.headers[name])
 
-    @classmethod
-    def postJson(cls, json_data):
-        r = requests.post('http://127.0.0.1:8080', json=json_data)
-        return r.json()
-
     def test_frame_calculate(self):
-        result = self.postJson({
+        result = requests.post('http://127.0.0.1:8080', json={
             'jsonrpc': '2.0',
             'id': '249teg25e',
             'method': 'frame_calculate',
@@ -85,7 +80,7 @@ class ResponseTest(TestCase):
                     ]
                 }
             }
-        })
+        }).json()
         expected = {
             'jsonrpc': '2.0',
             'id': '249teg25e',
