@@ -40,6 +40,49 @@ or on error:
 }
 ```
 ### Methods
+#### frame.calculate
+##### Discription
+Analyze frame structure's node displacements.
+##### Params
+```json
+{
+    "model": {
+        "nodes": {
+            "id": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "lines": {
+        
+        },
+        "sections": {
+        
+        },
+        "materials": {
+        
+        }
+        "boundaries": {
+        
+        },
+        "nodeLoads": {
+        
+        }
+    }
+}
+```
+##### Result
+```json
+{
+    "displacements": {
+        "node_id": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    }
+}
+```
 #### frame_calculate
 ##### Discription
 Analyze frame structure's node displacements.
