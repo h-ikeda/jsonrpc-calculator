@@ -41,8 +41,8 @@ def calculate(model):
     perm = ((a, b) for a in ends for b in ends)
     arg_keys = 'Ax', 'Iz', 'Iy', 'Ay', 'Az', 'theta', 'J'
     for ln in model['lines'].values():
-        nobjs = (model['nodes'][ln[end]] for end in ends)
-        v = reduce(lambda a, b: (b[c] - a[c] for c in coos[:3]), nobjs)
+        nobjs = tuple(model['nodes'][ln[end]] for end in ends)
+        v = tuple(nobjs[1][c] - nobjs[0][c] for c in coos[:3])
         s = {
             key: value
                 for key, value in sections[ln['section']].items()
