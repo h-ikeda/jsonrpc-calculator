@@ -21,6 +21,34 @@ class FrameTests(TestCase):
         ]
     }
 
+    __model2 = {
+        'nodes': {
+            '0': {'x': 0, 'y': 0, 'z': 0},
+            '1': {'x': 0, 'y': 0, 'z': 1}
+        },
+        'lines': {
+            '0': {'n1': '0', 'n2': '1', 'section': '0', 'material': '0'}
+        },
+        'sections': {
+            '0': {'section_type': 'H', 'H': 3.2, 'B': 3.125, 'tw': 0.125, 'tf': 0.1}
+        },
+        'materials': {
+            '0': {'E': 1, 'G': 1}
+        },
+        'boundaries': {
+            '0': {'node': '0', 'x': True, 'y': True, 'z': True, 'rx': True, 'ry': True, 'rz': True},
+            '1': {'node': '1', 'x': True, 'y': True, 'z': 0, 'rx': True, 'ry': True, 'rz': True}
+        },
+        'nodeLoads': {
+            '0': {'node': '1', 'x': 0, 'y': 1, 'z': 1, 'rx': 0, 'ry': 0, 'rz': -1}
+        }
+    }
+
     def test_frame_calculate(self):
         a = frame.frame_calculate(self.__model)
         self.assertEqual(a, {'displacements': {1: {'z': 1}}})
+
+    def test_calculate(self):
+        a = frame.calculate(self.__model2)
+        self.assertEqual(a, {'displacements': {'1': {'z': 1}}})
+

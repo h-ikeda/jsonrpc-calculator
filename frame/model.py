@@ -34,16 +34,16 @@ class Model:
         self.__index -= fixedCoodinates
         self.__index = {pair: i for i, pair in enumerate(self.__index)}
 
-    def effectiveIndexOf(self, node_id, coodinate):
+    def effective_indexof(self, node_id, coodinate):
         return self.__index.get((node_id, coodinate), -1)
 
-    def effectiveCount(self):
+    def effective_count(self):
         return len(self.__index)
 
-    def effectiveCoodinates(self):
+    def effective_coodinates(self):
         return self.__index
 
-    def lineVector(self, line_id):
+    def line_vector(self, line_id):
         n1 = self.lines[line_id]['n1']
         n2 = self.lines[line_id]['n2']
         return tuple(self.nodes[n2][c] - self.nodes[n1][c] for c in coodinates_d)

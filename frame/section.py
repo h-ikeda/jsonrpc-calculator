@@ -3,20 +3,20 @@ from math import pi, sqrt
 
 def properties(section_type, *args, **kwargs):
     if section_type == 'H':
-        return hSectionProperties(*args, **kwargs)
+        return h_section_properties(*args, **kwargs)
     elif section_type == 'T':
-        return tSectionProperties(*args, **kwargs)
+        return t_section_properties(*args, **kwargs)
     elif section_type == 'I':
-        return iSectionProperties(*args, **kwargs)
+        return i_section_properties(*args, **kwargs)
     elif section_type == 'circle':
-        return circleSectionProperties(*args, **kwargs)
+        return circle_section_properties(*args, **kwargs)
     elif section_type == 'C':
-        return cSectionProperties(*args, **kwargs)
+        return c_section_properties(*args, **kwargs)
     elif section_type == 'square':
-        return squareSectionProperties(*args, **kwargs)
+        return square_section_properties(*args, **kwargs)
 
 
-def hSectionProperties(H, B, tw, tf, r=0):
+def h_section_properties(H, B, tw, tf, r=0):
     rd = (1 - 2 / (4 - pi) / 3) * r
     rA = (1 - pi * 0.25) * r ** 2
     rI = (1 / 3. - pi / 16 - 1 / (4 - pi) / 9) * r ** 4
@@ -43,7 +43,7 @@ def hSectionProperties(H, B, tw, tf, r=0):
     }
 
 
-def tSectionProperties(H, B, tw, tf, r=0):
+def t_section_properties(H, B, tw, tf, r=0):
     rd = (1 - 2 / (4 - pi) / 3) * r
     rA = (1 - pi * 0.25) * r ** 2
     rI = (1 / 3. - pi / 16 - 1 / (4 - pi) / 9) * r ** 4
