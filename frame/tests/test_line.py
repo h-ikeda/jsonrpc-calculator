@@ -12,7 +12,7 @@ class LineTests(TestCase):
         E = 0.201
         A = 0.01635
         k = E * A / L
-        a = line.stiffnessLocal(L, E, 0, A)
+        a = line.stiffness_local(L, E, 0, A)
         self.assertTrue(allclose((
             (k, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),
@@ -44,7 +44,7 @@ class LineTests(TestCase):
 
     def test_stiffness_global(self):
         # As a truss, no rotation.
-        a = line.stiffnessGlobal(1241, 0, 0, 5.2, 0, 12.4)
+        a = line.stiffness_global(1241, 0, 0, 5.2, 0, 12.4)
         self.assertTrue(allclose((
             (0.051958098, 0., 0., 0., 0., 0.),
             (0., 0., 0., 0., 0., 0.),

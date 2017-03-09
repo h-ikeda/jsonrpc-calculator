@@ -8,50 +8,86 @@
 #
 
 import numpy as np
+from scipy.sparse import coo_matrix
+from scipy.sparse.linalg import spsolve
 from scipy.linalg import solve
-from . import line
-from .model import Model
+from frame import line, section
+from frame.model import Model
 
 
 def calculate(model):
-    fixed_coodinates = set()
-    for boundary in model['boundaries'].values():
-        for coo in ('x', 'y', 'z', 'rx', 'ry', 'rz'):
-            if boundary[coo] and isinstance(boundary[coo], bool):
-                fixed_coodinates.add((boundary['node'], coo))
-    indexes = {(node, coo) for node in model['nodes'] for coo in ('x', 'y', 'z', 'rx', 'ry', 'rz')}
-    indexes -= fixed_coodinates
-    indexes = {pair: i for i, pair in enumerate(indexes)}
-    K = np.zeros((len(indexes), ) * 2)
-    for key, tline in model['lines'].items():
-        n = tline['n1'], tline['n2']
-        n1 = model['nodes'][n[0]]
-        n2 = model['nodes'][n[1]]
-        v = [n2[coo] - n1[coo] for coo in ('x', 'y', 'z')]
-        E = tline['EA']
-        G = 0
-        A = 1
-        for i, Ki in enumerate(line.stiffnessGlobal(v[0], v[1], v[2], E, G, A)):
-            for k1, d1 in enumerate(('x', 'y', 'z', 'rx', 'ry', 'rz')):
-                for k2, d2 in enumerate(('x', 'y', 'z', 'rx', 'ry', 'rz')):
-                    if (n[i // 2], d1) in indexes and (n[i % 2], d2) in indexes:
-                        a = indexes[(n[i // 2], d1)]
-                        b = indexes[(n[i % 2], d2)]
-                        K[a][b] += Ki[k1][k2]
-    P = np.zeros(len(indexes))
-    for node_load in model['nodeLoads'].values():
-        for d in ('x', 'y', 'z', 'rx', 'ry', 'rz'):
-            if (node_load['node'], d) in indexes:
-                i = indexes[(node_load['node'], d)]
-                P[i] += node_load[d]
-    D = solve(K, P, overwrite_a=True, overwrite_b=True)
+    coos = 'x', 'y', 'z', 'rx', 'ry', 'rz'
+    fixed_coos = {
+        (bound['node'], coo)
+            for bound in model['boundaries'].values()
+                for coo in coos
+                    if bound[coo] and isinstance(bound[coo], bool)
+    }
+    coo_indexes = tuple(
+        (node_id, coo)
+            for node_id in model['nodes']
+                for coo in coos
+                    if (node_id, coo) not in fixed_coos
+    )
+    sections = {
+        id: section.properties(**data)
+            for id, data in model['sections'].items()
+    }
+    materials = model['materials']
+    data = []
+    rows = []
+    cols = []
+    ends = 'n1', 'n2'
+    perm = ((a, b) for a in ends for b in ends)
+    arg_keys = 'Ax', 'Iz', 'Iy', 'Ay', 'Az', 'theta', 'J'
+    for ln in model['lines'].values():
+        nobjs = (model['nodes'][ln[end]] for end in ends)
+        v = reduce(lambda a, b: (b[c] - a[c] for c in coos[:3]), nobjs)
+        s = {
+            key: value
+                for key, value in sections[ln['section']].items()
+                    if key in arg_keys
+        }
+        s.update(materials[ln['material']])
+        matrixes = line.stiffness_global(*v, **s)
+        for k, n in zip(matrixes, perm):
+            for i, c1 in enumerate(coos):
+                try:
+                    row = coo_indexes.index((ln[n[0]], c1))
+                except ValueError:
+                    continue
+                for j, c2 in enumerate(coos):
+                    try:
+                        col = coo_indexes.index((ln[n[1]], c2))
+                    except ValueError:
+                        continue
+                    data.append(k[i][j])
+                    rows.append(row)
+                    cols.append(col)
+    a = coo_matrix((data, (rows, cols)), shape=(len(coo_indexes),)*2)
+    data = []
+    rows = []
+    cols = []
+    for ld in model['nodeLoads'].values():
+        for coo in coos:
+            if ld[coo]:
+                try:
+                    rows.append(coo_indexes.index((ld['node'], coo)))
+                except ValueError:
+                    continue
+                data.append(ld[coo])
+                cols.append(0)
+    b = coo_matrix((data, (rows, cols)), shape=(len(coo_indexes), 1))
+    dis = spsolve(a, b)
     R = {}
-    for node_id, coodinate in indexes:
+    for node_id, coo in coo_indexes:
         if node_id in R:
-            R[node_id][coodinate] = D[indexes[(node_id, coodinate)]]
+            R[node_id][coo] = dis[coo_indexes.index((node_id, coo))]
         else:
-            R[node_id] = {coodinate: D[indexes[(node_id, coodinate)]]}
-    return {'displacements': R}
+            R[node_id] = {coo: dis[coo_indexes.index((node_id, coo))]}
+    return {
+        'displacements': R
+    }
 
 
 def frame_calculate(frameModel):
@@ -63,7 +99,7 @@ def frame_calculate(frameModel):
         E = tline['EA']
         G = 0
         A = 1
-        for i, Ki in enumerate(line.stiffnessGlobal(v[0], v[1], v[2], E, G, A)):
+        for i, Ki in enumerate(line.stiffness_global(v[0], v[1], v[2], E, G, A)):
             for k1, d1 in enumerate(('x', 'y', 'z', 'rx', 'ry', 'rz')):
                 for k2, d2 in enumerate(('x', 'y', 'z', 'rx', 'ry', 'rz')):
                     a = inputModel.effective_indexof(n[i // 2], d1)

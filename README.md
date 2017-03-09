@@ -69,10 +69,11 @@ Analyze frame structure's node displacements.
 ```json
 {
     "displacements": {
-        "node_id": 0,
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "node_id": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
     }
 }
 ```

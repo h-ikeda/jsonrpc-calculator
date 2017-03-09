@@ -1,10 +1,10 @@
-from math import hypot
 from scipy.linalg import block_diag
-from .matrix import transformMatrix
+from frame.matrix import transformMatrix
 from numpy import dot
+from numpy.linalg import norm
 
 
-def stiffnessLocal(L, E, G, Ax, Iz=0, Iy=0, Ay=0, Az=0, J=0):
+def stiffness_local(L, E, G, Ax, Iz=0, Iy=0, Ay=0, Az=0, J=0):
     if Ay == 0:
         Ay = Ax
     if Az == 0:
@@ -69,8 +69,8 @@ def stiffnessLocal(L, E, G, Ax, Iz=0, Iy=0, Ay=0, Az=0, J=0):
     )
 
 
-def stiffnessGlobal(x, y, z, E, G, Ax, Iz=0, Iy=0, Ay=0, Az=0, theta=0, J=0):
+def stiffness_global(x, y, z, E, G, Ax, Iz=0, Iy=0, Ay=0, Az=0, theta=0, J=0):
     t = block_diag(*(transformMatrix(x, y, z, theta),) * 2)
     r = t.transpose()
-    for m in stiffnessLocal(hypot(hypot(x, y), z), E, G, Ax, Iz, Iy, Ay, Az, J):
+    for m in stiffness_local(norm((x, y, z)), E, G, Ax, Iz, Iy, Ay, Az, J):
         yield dot(dot(t, m), r)
