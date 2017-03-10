@@ -84,26 +84,22 @@ def calculate(model):
                     rows.append(row)
                     cols.append(col)
     a = coo_matrix((data, (rows, cols)), shape=(len(coo_indexes),)*2)
-    data = []
-    rows = []
-    cols = []
+    b = np.zeros(len(coo_indexes))
     for ld in values(model['nodeLoads']):
         for coo in coos:
             if ld[coo]:
                 try:
-                    rows.append(coo_indexes.index((ld['node'], coo)))
+                    row = coo_indexes.index((ld['node'], coo))
                 except ValueError:
                     continue
-                data.append(ld[coo])
-                cols.append(0)
-    b = coo_matrix((data, (rows, cols)), shape=(len(coo_indexes), 1))
+                b[row] += ld[coo]
     dis = spsolve(a, b)
     R = {}
     for node_id, coo in coo_indexes:
         if node_id in R:
-            R[node_id][coo] = dis[coo_indexes.index((node_id, coo)),]
+            R[node_id][coo] = dis[coo_indexes.index((node_id, coo))]
         else:
-            R[node_id] = {coo: dis[coo_indexes.index((node_id, coo)),]}
+            R[node_id] = {coo: dis[coo_indexes.index((node_id, coo))]}
     return {
         'displacements': R
     }
