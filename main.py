@@ -1,9 +1,8 @@
 from jsonrpc import JSONRPCResponseManager, dispatcher
-from frame import frame_calculate, calculate
+import frame
 
-dispatcher['frame_calculate'] = frame_calculate
-dispatcher['calculate'] = calculate
-
+dispatcher.add_method(frame.frame_calculate, 'frame_calculate')
+dispatcher.add_method(frame.calculate)
 
 def app(environ, start_response):
     if 'POST' != environ.get('REQUEST_METHOD'):
