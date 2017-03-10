@@ -101,9 +101,9 @@ def calculate(model):
     R = {}
     for node_id, coo in coo_indexes:
         if node_id in R:
-            R[node_id][coo] = dis[coo_indexes.index((node_id, coo))]
+            R[node_id][coo] = dis[coo_indexes.index((node_id, coo)),]
         else:
-            R[node_id] = {coo: dis[coo_indexes.index((node_id, coo))]}
+            R[node_id] = {coo: dis[coo_indexes.index((node_id, coo)),]}
     return {
         'displacements': R
     }
