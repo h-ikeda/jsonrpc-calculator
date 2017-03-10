@@ -15,23 +15,42 @@ from frame import line, section
 from frame.model import Model
 
 
+def values(seq):
+    iters = seq.values() if isinstance(seq, dict) else seq
+    for value in iters:
+        if value is not None:
+            yield value
+
+
+def items(seq):
+    iters = seq.items() if isinstance(seq, dict) else enumerate(seq)
+    for key, value in iters:
+        if value is not None:
+            yield key, value
+
+
+def keys(seq):
+    for key, _ in items(seq):
+        yield key
+
+
 def calculate(model):
     coos = 'x', 'y', 'z', 'rx', 'ry', 'rz'
     fixed_coos = {
         (bound['node'], coo)
-            for bound in model['boundaries'].values()
+            for bound in values(model['boundaries'])
                 for coo in coos
                     if bound[coo] and isinstance(bound[coo], bool)
     }
     coo_indexes = tuple(
         (node_id, coo)
-            for node_id in model['nodes']
+            for node_id in keys(model['nodes'])
                 for coo in coos
                     if (node_id, coo) not in fixed_coos
     )
     sections = {
         id: section.properties(**data)
-            for id, data in model['sections'].items()
+            for id, data in items(model['sections'])
     }
     materials = model['materials']
     data = []
@@ -40,7 +59,7 @@ def calculate(model):
     ends = 'n1', 'n2'
     perm = ((a, b) for a in ends for b in ends)
     arg_keys = 'Ax', 'Iz', 'Iy', 'Ay', 'Az', 'theta', 'J'
-    for ln in model['lines'].values():
+    for ln in values(model['lines']):
         nobjs = tuple(model['nodes'][ln[end]] for end in ends)
         v = tuple(nobjs[1][c] - nobjs[0][c] for c in coos[:3])
         s = {
@@ -68,7 +87,7 @@ def calculate(model):
     data = []
     rows = []
     cols = []
-    for ld in model['nodeLoads'].values():
+    for ld in values(model['nodeLoads']):
         for coo in coos:
             if ld[coo]:
                 try:
