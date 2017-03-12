@@ -5,8 +5,8 @@ from frame import section
 
 
 class LineTests(TestCase):
-    def test_h_section_properties(self):
-        a = section.h_section_properties(200, 100, 5.5, 8, 8)
+    def test_h_properties(self):
+        a = section.h_properties(200, 100, 5.5, 8, 8)
         self.assertAlmostEqual(2666.9380702, a['Ax'])
         self.assertAlmostEqual(1600, a['Ay'])
         self.assertAlmostEqual(1100, a['Az'])
@@ -19,8 +19,8 @@ class LineTests(TestCase):
         self.assertAlmostEqual(22.391428, a['iz'])
 
 
-    def test_t_section_properties(self):
-        a = section.t_section_properties(100, 100, 5.5, 8, 8)
+    def test_t_properties(self):
+        a = section.t_properties(100, 100, 5.5, 8, 8)
         self.assertAlmostEqual(1333.4690351, a['Ax'])
         self.assertAlmostEqual(800, a['Ay'])
         self.assertAlmostEqual(550, a['Az'])
