@@ -1,3 +1,4 @@
+# coding: UTF-8
 #
 # The data structure of 'model' is below:
 #
@@ -8,18 +9,15 @@
 #
 
 import numpy as np
-from scipy.sparse import coo_matrix
+from numpy import zeros
+from scipy.sparse import dok_matrix
 from scipy.sparse.linalg import spsolve
 from scipy.linalg import solve
 from frame import line, section
 from frame.model import Model
 
 
-def values(seq):
-    iters = seq.values() if isinstance(seq, dict) else seq
-    for value in iters:
-        if value is not None:
-            yield value
+coos = 'x', 'y', 'z', 'rx', 'ry', 'rz'
 
 
 def items(seq):
@@ -34,74 +32,133 @@ def keys(seq):
         yield key
 
 
-def calculate(model):
-    coos = 'x', 'y', 'z', 'rx', 'ry', 'rz'
-    fixed_coos = {
-        (bound['node'], coo)
-            for bound in values(model['boundaries'])
-                for coo in coos
-                    if bound[coo] and isinstance(bound[coo], bool)
-    }
-    coo_indexes = tuple(
-        (node_id, coo)
-            for node_id in keys(model['nodes'])
-                for coo in coos
-                    if (node_id, coo) not in fixed_coos
-    )
-    sections = {
-        id: section.properties(**data)
-            for id, data in items(model['sections'])
-    }
-    materials = model['materials']
-    data = []
-    rows = []
-    cols = []
-    ends = 'n1', 'n2'
-    perm = ((a, b) for a in ends for b in ends)
-    arg_keys = 'Ax', 'Iz', 'Iy', 'Ay', 'Az', 'theta', 'J'
-    for ln in values(model['lines']):
-        nobjs = tuple(model['nodes'][ln[end]] for end in ends)
-        v = tuple(nobjs[1][c] - nobjs[0][c] for c in coos[:3])
-        s = {
-            key: value
-                for key, value in sections[ln['section']].items()
-                    if key in arg_keys
-        }
-        s.update(materials[ln['material']])
-        matrixes = line.stiffness_global(*v, **s)
-        for k, n in zip(matrixes, perm):
-            for i, c1 in enumerate(coos):
-                try:
-                    row = coo_indexes.index((ln[n[0]], c1))
-                except ValueError:
-                    continue
-                for j, c2 in enumerate(coos):
-                    try:
-                        col = coo_indexes.index((ln[n[1]], c2))
-                    except ValueError:
-                        continue
-                    data.append(k[i][j])
-                    rows.append(row)
-                    cols.append(col)
-    a = coo_matrix((data, (rows, cols)), shape=(len(coo_indexes),)*2)
-    b = np.zeros(len(coo_indexes))
-    for ld in values(model['nodeLoads']):
+def values(seq):
+    iters = seq.values() if isinstance(seq, dict) else seq
+    for value in iters:
+        if value is not None:
+            yield value
+
+
+def fixed_coos_of_boundary(boundary_obj):
+    for coo in coos:
+        if boundary_obj[coo] and isinstance(boundary_obj[coo], bool):
+            yield boundary_obj['node'], coo
+
+
+def fixed_coos(boundary_objs):
+    for boundary in boundary_objs:
+        # yield from fixed_coos_of_boundary(boundary) # python 3.x
+        for _ in fixed_coos_of_boundary(boundary):
+            yield _
+
+
+def unfixed_coos(node_ids, boundary_objs):
+    fixed = set(fixed_coos(boundary_objs))
+    for node_id in node_ids:
         for coo in coos:
-            if ld[coo]:
-                try:
-                    row = coo_indexes.index((ld['node'], coo))
-                except ValueError:
-                    continue
-                b[row] += ld[coo]
-    dis = spsolve(a, b)
-    R = {}
-    for node_id, coo in coo_indexes:
-        if node_id in R:
-            R[node_id][coo] = dis[coo_indexes.index((node_id, coo))]
-        else:
-            R[node_id] = {coo: dis[coo_indexes.index((node_id, coo))]}
+            if (node_id, coo) not in fixed:
+                yield node_id, coo
+
+
+def index_dict(seq):
+    return {d: i for i, d in enumerate(seq)}
+
+
+def node_vector(node_obj):
+    for coo in coos[:3]:
+        yield node_obj[coo]
+
+
+def line_vector(n1_obj, n2_obj):
+    for c1, c2 in zip(node_vector(n1_obj), node_vector(n2_obj)):
+        yield c2 - c1
+
+
+def calculated_section(section_obj, arg_names):
+    p = section.properties(**section_obj)
     return {
-        'displacements': R
+        arg_name: p[arg_name]
+            for arg_name in arg_names
+                if arg_name in p
+    }
+
+
+def calculated_sections(sections, arg_names):
+    return {
+        i: calculated_section(d, arg_names)
+            for i, d in sections
+    }
+
+
+def calculated_material(material_obj, arg_names):
+    m = material_obj # 必要ならここで演算してプロパティを作る。現在は丸投げ。
+    return {
+        arg_name: m[arg_name]
+            for arg_name in arg_names
+                if arg_name in m
+    }
+
+
+def calculated_materials(materials, arg_names):
+    return {
+        i: calculated_material(d, arg_names)
+            for i, d in materials
+    }
+
+
+def get_indexes(node_id, coo_indexes):
+    for i, coo in enumerate(coos):
+        if (node_id, coo) in coo_indexes:
+            yield i, coo_indexes[node_id, coo]
+
+
+def line_node_ids(line_obj):
+    for n in 'n1', 'n2':
+        yield line_obj[n]
+
+
+def stiffness_node_ids(line_obj):
+    for n1 in line_node_ids(line_obj):
+        for n2 in line_node_ids(line_obj):
+            yield n1, n2
+
+
+def line_nodes(line_obj, nodes):
+    for i in line_node_ids(line_obj):
+        yield nodes[i]
+
+
+def calculate(model):
+    boundaries = model['boundaries']
+    nodes = model['nodes']
+    unfixed = unfixed_coos(keys(nodes), values(boundaries))
+    coo_indexes = index_dict(unfixed)
+    section_keys = 'Ax', 'Iz', 'Iy', 'Ay', 'Az', 'theta', 'J'
+    sections = calculated_sections(items(model['sections']), section_keys)
+    material_keys = 'E', 'G'
+    materials = calculated_materials(items(model['materials']), material_keys)
+    a = dok_matrix((len(coo_indexes),) * 2)
+    for ln in values(model['lines']):
+        v = line_vector(*line_nodes(ln, nodes))
+        p = dict(sections[ln['section']], **materials[ln['material']])
+        for k, (n1, n2) in zip(line.stiffness_global(*v, **p), stiffness_node_ids(ln)):
+            for i, row in get_indexes(n1, coo_indexes):
+                for j, col in get_indexes(n2, coo_indexes):
+                    a[row, col] += k[i][j]
+    b = zeros(len(coo_indexes))
+    for ld in values(model['nodeLoads']):
+        for i, row in get_indexes(ld['node'], coo_indexes):
+            if ld[coos[i]]:
+                b[row] += ld[coos[i]]
+    dis_array = spsolve(a, b)
+    dis = {}
+    for (node_id, coo), i in coo_indexes.items():
+        if node_id in dis:
+            dis[node_id][coo] = dis_array[i]
+        else:
+            dis[node_id] = {coo: dis_array[i]}
+    return {
+        'displacements': dis
     }
 
 

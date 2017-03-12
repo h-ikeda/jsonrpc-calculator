@@ -1,22 +1,41 @@
 from math import pi, sqrt
 
 
-def properties(section_type, *args, **kwargs):
-    if section_type == 'H':
-        return h_section_properties(*args, **kwargs)
-    elif section_type == 'T':
-        return t_section_properties(*args, **kwargs)
-    elif section_type == 'I':
-        return i_section_properties(*args, **kwargs)
-    elif section_type == 'circle':
-        return circle_section_properties(*args, **kwargs)
-    elif section_type == 'C':
-        return c_section_properties(*args, **kwargs)
-    elif section_type == 'square':
-        return square_section_properties(*args, **kwargs)
+def ordered_args(arg_names, *args, **kwargs):
+    for arg in args:
+        yield arg
+    for key in arg_names[len(args):]:
+        if key in kwargs:
+            yield kwargs[key]
 
 
-def h_section_properties(H, B, tw, tf, r=0):
+def mandate(func, arg_names, *args, **kwargs):
+    return func(*ordered_args(arg_names, *args, **kwargs))
+
+
+def properties(shape, *args, **kwargs):
+    if shape == 'H':
+        arg_names = 'H', 'B', 'tw', 'tf', 'r'
+        func = h_properties
+    elif shape == 'T':
+        arg_names = 'H', 'B', 'tw', 'tf', 'r'
+        func = t_properties
+    elif shape == 'I':
+        arg_names = 'H', 'B', 'tw', 'tf'
+        func = i_properties
+    elif shape == 'O':
+        arg_names = 'D', 't'
+        func = o_properties
+    elif shape == 'C':
+        arg_names = 'H', 'B', 'tw', 'tf'
+        func = c_properties
+    elif shape == 'R':
+        arg_names = 'H', 'B', 't', 'r'
+        func = r_properties
+    return mandate(func, arg_names, *args, **kwargs)
+
+
+def h_properties(H, B, tw, tf, r=0):
     rd = (1 - 2 / (4 - pi) / 3) * r
     rA = (1 - pi * 0.25) * r ** 2
     rI = (1 / 3. - pi / 16 - 1 / (4 - pi) / 9) * r ** 4
@@ -43,7 +62,7 @@ def h_section_properties(H, B, tw, tf, r=0):
     }
 
 
-def t_section_properties(H, B, tw, tf, r=0):
+def t_properties(H, B, tw, tf, r=0):
     rd = (1 - 2 / (4 - pi) / 3) * r
     rA = (1 - pi * 0.25) * r ** 2
     rI = (1 / 3. - pi / 16 - 1 / (4 - pi) / 9) * r ** 4
