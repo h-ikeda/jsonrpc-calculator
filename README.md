@@ -1,5 +1,5 @@
-Available at http://jsonrpc-calculator.1stop-st.org/ !
-#JSONRPC Calculator
+Available at https://nameless-falls-59671.herokuapp.com/ !
+# JSONRPC Calculator
 Python version|Build status|Code coverage
 :-:|---|---
 2.7.11|[![CircleCI](https://circleci.com/gh/1stop-st/jsonrpc-calculator.svg?style=svg)](https://circleci.com/gh/1stop-st/jsonrpc-calculator)|[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/6f01fe311425497bb25fc51022ab0461)](https://www.codacy.com/app/1stop-st/jsonrpc-calculator?utm_source=github.com&utm_medium=referral&utm_content=1stop-st/jsonrpc-calculator&utm_campaign=Badge_Coverage)
