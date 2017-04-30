@@ -12,12 +12,9 @@ python:
 addons:
   apt:
     packages:
-      - gfortran
       - libatlas-base-dev
 before_script:
-  - pip install requests coverage
-script: nosetests --with-coverage
-after_script:
-  - coverage xml
-  - pip install codacy-coverage
+  - pip install requests coverage codacy-coverage
+script:
+  - nosetests --with-coverage --cover-xml
   - python-codacy-coverage -r coverage.xml
