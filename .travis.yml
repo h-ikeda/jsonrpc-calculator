@@ -15,7 +15,7 @@ addons:
       - gfortran
       - libatlas-base-dev
 before_script:
-  - pip install requests coverage codacy-coverage
+  - pip install nose requests coverage codacy-coverage
 script:
   - nosetests --with-coverage --cover-xml
   - python-codacy-coverage -r coverage.xml
