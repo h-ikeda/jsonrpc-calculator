@@ -12,6 +12,7 @@ python:
 addons:
   apt:
     packages:
+      - gfortran
       - libatlas-base-dev
 before_install:
   - pip install --upgrade pip
