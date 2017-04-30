@@ -1,5 +1,7 @@
 language: python
-cache: pip
+cache:
+  - apt
+  - pip
 python:
   - "2.7"
   - "3.5"
@@ -12,7 +14,10 @@ addons:
     packages:
       - gfortran
       - libatlas-base-dev
-install: pip install -v -r requirements.txt
 before_script:
-  - pip install requests
-script: nosetests
+  - pip install requests coverage
+script: nosetests --with-coverage
+after_script:
+  - coverage xml
+  - pip install codacy-coverage
+  - python-codacy-coverage -r coverage.xml
