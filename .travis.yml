@@ -19,6 +19,5 @@ before_install:
   - pip install requests coverage codacy-coverage
 script:
   - nosetests --with-coverage
-  - coverage report --omit */virtualenv/*
   - coverage xml --omit */virtualenv/*
   - python-codacy-coverage -r coverage.xml
