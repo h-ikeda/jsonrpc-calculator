@@ -1,0 +1,2 @@
+[run]
+omit=$TRAVIS_BUILD_DIR/venv/*
