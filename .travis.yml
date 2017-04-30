@@ -1,0 +1,24 @@
+language: python
+sudo: false
+cache:
+  - apt
+  - pip
+python:
+  - "2.7"
+  - "3.5"
+  - "3.5-dev"
+  - "3.6"
+  - "3.6-dev"
+  - "nightly"
+addons:
+  apt:
+    packages:
+      - gfortran
+      - libatlas-base-dev
+before_install:
+  - pip install --upgrade pip
+  - pip install requests coverage codacy-coverage
+script:
+  - nosetests --with-coverage
+  - coverage xml
+  - python-codacy-coverage -r coverage.xml
