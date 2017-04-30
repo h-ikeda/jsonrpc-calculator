@@ -19,5 +19,6 @@ before_install:
   - pip install --upgrade pip
   - pip install requests coverage codacy-coverage
 script:
-  - nosetests --with-coverage --cover-xml
+  - nosetests --with-coverage
+  - coverage xml
   - python-codacy-coverage -r coverage.xml
