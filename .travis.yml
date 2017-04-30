@@ -13,8 +13,8 @@ addons:
   apt:
     packages:
       - libatlas-base-dev
-install:
-  - pip install --only-binary=numpy,scipy -r requirements.txt
+before_install:
+  - pip install --upgrade pip
   - pip install requests coverage codacy-coverage
 script:
   - nosetests --with-coverage --cover-xml
