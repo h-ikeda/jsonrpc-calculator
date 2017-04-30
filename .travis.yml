@@ -6,10 +6,11 @@ python:
   - "3.6"
   - "3.6-dev"
   - "nightly"
-apt:
-  packages:
-    - gfortran
-    - libatlas-base-dev
+addons:
+  apt:
+    packages:
+      - gfortran
+      - libatlas-base-dev
 install:
   - pip install requests
   - pip install -r requirements.txt
