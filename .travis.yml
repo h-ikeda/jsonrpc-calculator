@@ -6,4 +6,5 @@ python:
   - "3.6"
   - "3.6-dev"
   - "nightly"
+before_install: sudo apt-get install -qq -y libatlas-base-dev
 script: nosetests
