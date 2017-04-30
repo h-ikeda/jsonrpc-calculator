@@ -1,4 +1,5 @@
 language: python
+cache: pip
 python:
   - "2.7"
   - "3.5"
@@ -11,7 +12,7 @@ addons:
     packages:
       - gfortran
       - libatlas-base-dev
-install:
+install: pip install -v -r requirements.txt
+before_script:
   - pip install requests
-  - pip install -r requirements.txt
 script: nosetests
