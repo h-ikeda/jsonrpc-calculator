@@ -1,5 +1,4 @@
 language: python
-sudo: false
 cache:
   - apt
   - pip
@@ -20,5 +19,5 @@ before_install:
   - pip install requests coverage codacy-coverage
 script:
   - nosetests --with-coverage
-  - coverage xml
+  - coverage xml --omit */virtualenv/*
   - python-codacy-coverage -r coverage.xml
