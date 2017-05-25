@@ -9,7 +9,8 @@ def app(environ, start_response):
         if 'OPTIONS' == environ.get('REQUEST_METHOD'):
             start_response('200 OK', [
                 ('Access-Control-Allow-Origin', '*'),
-                ('Access-Control-Allow-Methods', 'POST')])
+                ('Access-Control-Allow-Methods', 'POST'),
+                ('Access-Control-Allow-Headers', 'Content-Type')])
             yield b''
         elif environ.get('REQUEST_METHOD') in {'GET', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'TRACE', 'LINK', 'UNLINK', 'PATCH'}:
             start_response('405 Method Not Allowed', [])
