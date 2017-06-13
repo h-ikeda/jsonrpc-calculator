@@ -81,7 +81,7 @@ class ResponseTest(TestCase):
                         'd': {'node': 'a', 'x': True, 'y': True, 'z': True, 'rx': True, 'ry': True, 'rz': True},
                         'e': {'node': 'b', 'x': True, 'y': True, 'z': 0, 'rx': True, 'ry': True, 'rz': True}
                     },
-                    'nodeLoads': {
+                    'nodeloads': {
                         'f': {'node': 'b', 'x': 0, 'y': 1, 'z': 1, 'rx': 0, 'ry': 0, 'rz': -1}
                     }
                 }
