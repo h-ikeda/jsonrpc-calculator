@@ -41,7 +41,7 @@ Analyze frame structure's node displacements.
 ##### Params
 ```json
 {
-    "model": {
+    "model": {
         "nodes": {
             "id": 0,
             "x": 0,
@@ -51,13 +51,13 @@ Analyze frame structure's node displacements.
         "lines": {
         
         },
-        "sections": {
+        "sections": {
         
-        },
-        "materials": {
+        },
+        "materials": {
         
-        }
-        "boundaries": {
+        },
+        "boundaries": {
         
         },
         "nodeLoads": {
