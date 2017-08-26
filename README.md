@@ -1,6 +1,6 @@
 Available at https://nameless-falls-59671.herokuapp.com/ !
 # JSONRPC Calculator
-[![Build Status](https://travis-ci.org/1stop-st/jsonrpc-calculator.svg?branch=master)](https://travis-ci.org/1stop-st/jsonrpc-calculator) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6f01fe311425497bb25fc51022ab0461)](https://www.codacy.com/app/h-ikeda/jsonrpc-calculator?utm_source=github.com&utm_medium=referral&utm_content=1stop-st/jsonrpc-calculator&utm_campaign=badger)
+[![Build Status](https://travis-ci.org/1stop-st/jsonrpc-calculator.svg?branch=master)](https://travis-ci.org/1stop-st/jsonrpc-calculator) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6f01fe311425497bb25fc51022ab0461)](https://www.codacy.com/app/h-ikeda/jsonrpc-calculator?utm_source=github.com&utm_medium=referral&utm_content=1stop-st/jsonrpc-calculator&utm_campaign=badger) [ ![Codeship Status for 1stop-st/jsonrpc-calculator](https://app.codeship.com/projects/d34410c0-e145-0134-2aa0-3a335c5eb36d/status?branch=master)](https://app.codeship.com/projects/205458)
 ## Overview
 This program runs on wsgi server, recieves json requests compatible with jsonrpc, and responds processed values.
 ## Usage
